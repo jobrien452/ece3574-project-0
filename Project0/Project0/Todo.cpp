@@ -2,13 +2,13 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <regex>
 using namespace std;
 
 class Todo {
-	istream *inputstream;
 	fstream infile;
 	vector<string> mem;
-	int length;
+	int length, done;
 public:
 	Todo();
 	Todo(string);
@@ -24,23 +24,35 @@ Todo::Todo() {
 
 Todo::Todo(string fname) {
 	string line;
+	regex e ("^\d:\[X\]");//regex for done check
 	length = 0;
-	inputstream = &cin;
 	infile.open(fname, fstream::in | fstream::out | fstream::app);
-	while (!infile.eof()) {
+	while (!infile.eof()) {//read file and check where done tasks begin also measure length
 		infile >> line;
-		mem.push_back(line);//regex
+		mem.push_back(line);
 		length++;
+		if (regex_match(line.substr(0, 5), e)) {
+			done = length;
+		}
 	}
-	infile.seekp(0, ios::end);
+	infile.close();
 }
 
 void Todo::addit(string ins) {
-	infile << ":[ ] " << ins << endl;
+	string line = ":[ ] " + ins + "\n";
+	if (done == 0) {
+		mem.push_back(line);
+	}
+	else {
+		mem.insert(mem.begin()+(done - 1), line);
+		done++;
+	}
+	length++;
+	
 }
 
 int main(int argc, char* argv[]) {
-	if (argc > 4) {
+	if (argc > 4 && strcmp(argv[3],"add") != 0) {
 		cerr << "Too many args!" << endl;
 		return 0;
 	}
