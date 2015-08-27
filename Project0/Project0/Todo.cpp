@@ -85,7 +85,7 @@ void todo::parse(void) {
 }
 
 int main(int argc, char *argv[]) {//Main driver for program
-	todo driver(argc, argv);
+	//TODO move logic too new method, make action methods(add) private?
 	if (std::string(argv[1]) == "-f") { //case if -f switch is used
 		std::string argthree = std::string(argv[3]);
 		if (argthree != "add" && argc > 5) {
@@ -97,17 +97,17 @@ int main(int argc, char *argv[]) {//Main driver for program
 			for (int x = 4; x < argc; x++) {
 				temp = temp + " " + argv[x];
 			}
-			driver.addit(temp);
+			//driver.addit(temp);
 		}
 		else if (argthree == "do" && argc == 5) {
-			driver.doit(std::stoi(std::string(argv[4])));
+			//driver.doit(std::stoi(std::string(argv[4])));
 		}
 		else if (argc == 5) {
 			std::cerr << "Too many args!2" << std::endl;
 			return 0;
 		}
 		else if (argthree == "list") {
-			driver.list();
+			//driver.list();
 		}
 		else {
 			std::cerr << "Incorrect Usage! Usage: todo [-f file] command" << std::endl;
@@ -125,17 +125,17 @@ int main(int argc, char *argv[]) {//Main driver for program
 			for (int x = 3; x < argc; x++) {
 				temp = temp + " " + argv[x];
 			}
-			driver.addit(temp);
+			//driver.addit(temp);
 		}
 		else if (argone == "do" && argc == 3) {
-			driver.doit(std::stoi(std::string(argv[2])));
+			//driver.doit(std::stoi(std::string(argv[2])));
 		}
 		else if (argc == 3) {
 			std::cerr << "Too many args!4" << std::endl;
 			return 0;
 		}
 		else if (argone == "list") {
-			driver.list();
+			//driver.list();
 		}
 		else {
 			std::cerr << "Incorrect Usage! Usage: todo [-f file] command" << std::endl;
