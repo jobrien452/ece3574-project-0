@@ -14,6 +14,7 @@ public:
 	void list(void);
 	void doit(int);
 private:
+	void enumerate(void);
 	void write(void);
 	fstream infile;
 	vector<string> mem;
@@ -23,43 +24,20 @@ private:
 };
 
 Todo::Todo() { //default constuctor
-	string line;
 	file = "todo.txt";
-	regex e("^\d:\[X\]");//regex for done check
 	length = 0;
 	done = 0;
-	infile.open(file.c_str(), fstream::in);
-	while (getline(infile, line)) {//read file and check where done tasks begin also measure length
-		if (!line.empty()) {
-			mem.push_back(line.substr(1, line.npos));
-			length++;
-			if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
-				done = length;
-			}
-		}
-	}
-	infile.close();
+	enumerate();
 }
 //overloaded constructor
-Todo::Todo(string fname) : file(fname) {
-	Todo();
-	string line;
-	regex e("^\d:\[X\]");//regex for done check
-	infile.open(file.c_str(), fstream::in);
-	while (getline(infile, line)) {//read file and check where done tasks begin also measure length
-		if (!line.empty()) {
-			mem.push_back(line.substr(1, line.npos));
-			length++;
-			if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
-				done = length;
-			}
-		}
-	}
-	infile.close();
+Todo::Todo(string fname) {
+	file = fname;
+	length = 0;
+	done = 0;
+	enumerate();
 }
 
 void Todo::addit(string ins) {//adds string to file
-	cout << file << "!" << endl;
 	regex e ("\".*\"");
 	if (regex_match(ins, e)) {//check if string has prentheses 
 		ins = ins.substr(1, ins.length() - 2);
@@ -95,6 +73,23 @@ void Todo::doit(int i) { //if number for do is correct and isn't an already done
 		done--;
 		write();
 	}
+}
+
+void Todo::enumerate(void) {
+	string line;
+	regex e("^\d:\[X\]");//regex for done check
+	infile.open(file.c_str(), fstream::in);
+	while (getline(infile, line)) {//read file and check where done tasks begin also measure length
+		if (!line.empty()) {
+			mem.push_back(line.substr(1, line.npos));
+			length++;
+			if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
+				done = length;
+			}
+		}
+	}
+	infile.close();
+	remove(file.c_str());
 }
 
 void Todo::write(void) { //clears file then rewrites with new data
