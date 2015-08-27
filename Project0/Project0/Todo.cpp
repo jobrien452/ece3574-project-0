@@ -7,10 +7,6 @@
 using namespace std;
 
 class Todo {//class construct
-	fstream infile;
-	vector<string> mem;
-	string file;
-	int length, done;
 public:
 	Todo();
 	Todo(string);
@@ -19,31 +15,51 @@ public:
 	void doit(int);
 private:
 	void write(void);
-
+	fstream infile;
+	vector<string> mem;
+	string file;
+	int length, done;
+	
 };
 
 Todo::Todo() { //default constuctor
-	Todo("todo.txt");
+	string line;
+	file = "todo.txt";
+	regex e("^\d:\[X\]");//regex for done check
+	length = 0;
+	done = 0;
+	infile.open(file.c_str(), fstream::in);
+	while (getline(infile, line)) {//read file and check where done tasks begin also measure length
+		if (!line.empty()) {
+			mem.push_back(line.substr(1, line.npos));
+			length++;
+			if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
+				done = length;
+			}
+		}
+	}
+	infile.close();
 }
 //overloaded constructor
-Todo::Todo(string fname) {
+Todo::Todo(string fname) : file(fname) {
+	Todo();
 	string line;
-	file = fname;
-	regex e ("^\d:\[X\]");//regex for done check
-	length = 0;
-	infile.open(file, fstream::in | fstream::out | fstream::app);
-	while (!infile.eof() && file != "todo.txt") {//read file and check where done tasks begin also measure length
-		infile >> line;
-		mem.push_back(line.substr(1,line.npos));
-		length++;
-		if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
-			done = length;
+	regex e("^\d:\[X\]");//regex for done check
+	infile.open(file.c_str(), fstream::in);
+	while (getline(infile, line)) {//read file and check where done tasks begin also measure length
+		if (!line.empty()) {
+			mem.push_back(line.substr(1, line.npos));
+			length++;
+			if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
+				done = length;
+			}
 		}
 	}
 	infile.close();
 }
 
 void Todo::addit(string ins) {//adds string to file
+	cout << file << "!" << endl;
 	regex e ("\".*\"");
 	if (regex_match(ins, e)) {//check if string has prentheses 
 		ins = ins.substr(1, ins.length() - 2);
@@ -61,11 +77,12 @@ void Todo::addit(string ins) {//adds string to file
 }
 
 void Todo::list(void) { //lists file
-	infile.open(file, fstream::in | fstream::out | fstream::app);
+	infile.open(file.c_str(), fstream::in | fstream::out | fstream::app);
 	string temp;
 	while (infile >> temp) {
 		cout << temp << endl;
 	}
+	infile.close();
 }
 
 void Todo::doit(int i) { //if number for do is correct and isn't an already done task
@@ -81,38 +98,40 @@ void Todo::doit(int i) { //if number for do is correct and isn't an already done
 }
 
 void Todo::write(void) { //clears file then rewrites with new data
-	remove(file.c_str());
+	infile.open(file.c_str(), fstream::trunc);
+	infile.close();
 	int x = 1;
-	string temp;
-	infile.open(file, fstream::in | fstream::out | fstream::app);
+	infile.open(file.c_str(), fstream::in | fstream::out | fstream::app);
 	for (auto &pline : mem) {
 		infile << x << pline << endl;
+		x++;
 	}
 	infile.close();
 }
 
-int main(int argc, char* argv[]) {
-	if (argv[1] == "-f") { //case if -f switch is used
+int main(int argc, char* argv[]) {//Main driver for program
+	if (string(argv[1]) == "-f") { //case if -f switch is used
 		Todo driver(argv[2]);
-		if (argv[3] != "add" && argc > 5) {
+		string argthree = string(argv[3]);
+		if (argthree != "add" && argc > 5) {
 			cerr << "Too many args!1" << endl;
 			return 0;
 		}
-		else if (argv[3] == "add" && argc > 5) {
-			string temp = argv[4];
+		else if (argthree == "add" && argc > 5) {
+			string temp = string(argv[4]);
 			for (int x = 4; x < argc; x++) {
 				temp = temp + " " + argv[x];
 			}
-			driver.addit(argv[4]);
+			driver.addit(temp);
 		}
-		else if (argv[3] == "do" && argc == 5) {
-			driver.doit(stoi(argv[4]));
+		else if (argthree == "do" && argc == 5) {
+			driver.doit(stoi(string(argv[4])));
 		}
 		else if (argc == 5) {
 			cerr << "Too many args!2" << endl;
 			return 0;
 		}
-		else if (argv[3] == "list") {
+		else if (argthree == "list") {
 			driver.list();
 		}
 		else {
@@ -122,25 +141,26 @@ int main(int argc, char* argv[]) {
 	}
 	else { //case used if default file is chosen
 		Todo driver;
-		if (argv[1] != "add" && argc > 3) {
-			cerr << "Too many args!3" << endl;
+		string argone = string(argv[1]);
+		if (argone != "add"  && argc > 2) {
+			cerr << "Too many args!3" << argv[1] << endl;
 			return 0;
 		}
-		else if (argv[1] == "add" && argc > 3) {
-			string temp = argv[4];
-			for (int x = 4; x < argc; x++) {
+		else if (argone == "add" && argc > 2) {
+			string temp = string(argv[2]);
+			for (int x = 3; x < argc; x++) {
 				temp = temp + " " + argv[x];
 			}
-			driver.addit(argv[4]);
+			driver.addit(temp);
 		}
-		else if (argv[1] == "do" && argc == 3) {
-			driver.doit(stoi(argv[4]));
+		else if (argone == "do" && argc == 3) {
+			driver.doit(stoi(string(argv[2])));
 		}
 		else if (argc == 3) {
 			cerr << "Too many args!4" << endl;
 			return 0;
 		}
-		else if (argv[1] == "list") {
+		else if (argone == "list") {
 			driver.list();
 		}
 		else {
@@ -148,4 +168,5 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 	}
+	return 0;
 }
