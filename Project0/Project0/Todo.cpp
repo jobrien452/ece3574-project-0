@@ -17,6 +17,7 @@ public:
 	void addit(string);
 	void list(void);
 	void doit(int);
+private:
 	void write(void);
 
 };
@@ -31,7 +32,7 @@ Todo::Todo(string fname) {
 	regex e ("^\d:\[X\]");//regex for done check
 	length = 0;
 	infile.open(file, fstream::in | fstream::out | fstream::app);
-	while (!infile.eof()) {//read file and check where done tasks begin also measure length
+	while (!infile.eof() && file != "todo.txt") {//read file and check where done tasks begin also measure length
 		infile >> line;
 		mem.push_back(line.substr(1,line.npos));
 		length++;
@@ -43,6 +44,10 @@ Todo::Todo(string fname) {
 }
 
 void Todo::addit(string ins) {
+	regex e ("\".*\"");
+	if (regex_match(ins, e)) {
+		ins = ins.substr(1, ins.length() - 2);
+	}
 	string line = ":[ ] " + ins;
 	if (done == 0) {
 		mem.push_back(line);
@@ -52,11 +57,15 @@ void Todo::addit(string ins) {
 		done++;
 	}
 	length++;
-	
+	write();
 }
 
 void Todo::list(void) {
-	
+	infile.open(file, fstream::in | fstream::out | fstream::app);
+	string temp;
+	while (infile >> temp) {
+		cout << temp << endl;
+	}
 }
 
 void Todo::doit(int i) {
@@ -67,11 +76,12 @@ void Todo::doit(int i) {
 		mem.insert(mem.begin() + (done - 1), line);
 		mem.erase(mem.begin() + (i - 1));
 		done--;
+		write();
 	}
 }
 
 void Todo::write(void) {
-	remove(file.c_str);
+	remove(file.c_str());
 	int x = 1;
 	string temp;
 	infile.open(file, fstream::in | fstream::out | fstream::app);
@@ -82,11 +92,60 @@ void Todo::write(void) {
 }
 
 int main(int argc, char* argv[]) {
-	if (argc > 4 && strcmp(argv[3],"add") != 0) {
-		cerr << "Too many args!" << endl;
-		return 0;
+	if (argv[1] == "-f") {
+		Todo driver(argv[2]);
+		if (argv[3] != "add" && argc > 5) {
+			cerr << "Too many args!1" << endl;
+			return 0;
+		}
+		else if (argv[3] == "add" && argc > 5) {
+			string temp = argv[4];
+			for (int x = 4; x < argc; x++) {
+				temp = temp + " " + argv[x];
+			}
+			driver.addit(argv[4]);
+		}
+		else if (argv[3] == "do" && argc == 5) {
+			driver.doit(stoi(argv[4]));
+		}
+		else if (argc == 5) {
+			cerr << "Too many args!2" << endl;
+			return 0;
+		}
+		else if (argv[3] == "list") {
+			driver.list();
+		}
+		else {
+			cerr << "Incorrect Usage! Usage: todo [-f file] command" << endl;
+			return 0;
+		}
 	}
-	else if (argc == 4) {
-
+	else {
+		Todo driver;
+		if (argv[1] != "add" && argc > 3) {
+			cerr << "Too many args!3" << endl;
+			return 0;
+		}
+		else if (argv[1] == "add" && argc > 3) {
+			string temp = argv[4];
+			for (int x = 4; x < argc; x++) {
+				temp = temp + " " + argv[x];
+			}
+			driver.addit(argv[4]);
+		}
+		else if (argv[1] == "do" && argc == 3) {
+			driver.doit(stoi(argv[4]));
+		}
+		else if (argc == 3) {
+			cerr << "Too many args!4" << endl;
+			return 0;
+		}
+		else if (argv[1] == "list") {
+			driver.list();
+		}
+		else {
+			cerr << "Incorrect Usage! Usage: todo [-f file] command" << endl;
+			return 0;
+		}
 	}
 }
