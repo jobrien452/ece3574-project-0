@@ -6,7 +6,7 @@
 #include <stdio.h>
 using namespace std;
 
-class Todo {
+class Todo {//class construct
 	fstream infile;
 	vector<string> mem;
 	string file;
@@ -22,10 +22,10 @@ private:
 
 };
 
-Todo::Todo() {
+Todo::Todo() { //default constuctor
 	Todo("todo.txt");
 }
-
+//overloaded constructor
 Todo::Todo(string fname) {
 	string line;
 	file = fname;
@@ -36,31 +36,31 @@ Todo::Todo(string fname) {
 		infile >> line;
 		mem.push_back(line.substr(1,line.npos));
 		length++;
-		if (regex_match(line.substr(0, 5), e)) {
+		if (regex_match(line.substr(0, 5), e)) {//checks if line is done using regex
 			done = length;
 		}
 	}
 	infile.close();
 }
 
-void Todo::addit(string ins) {
+void Todo::addit(string ins) {//adds string to file
 	regex e ("\".*\"");
-	if (regex_match(ins, e)) {
+	if (regex_match(ins, e)) {//check if string has prentheses 
 		ins = ins.substr(1, ins.length() - 2);
 	}
 	string line = ":[ ] " + ins;
-	if (done == 0) {
+	if (done == 0) { //if no done tasks adds to end
 		mem.push_back(line);
 	}
-	else {
+	else { //else adds to one before last finished
 		mem.insert(mem.begin()+(done - 1), line);
 		done++;
 	}
 	length++;
-	write();
+	write(); //writes to file
 }
 
-void Todo::list(void) {
+void Todo::list(void) { //lists file
 	infile.open(file, fstream::in | fstream::out | fstream::app);
 	string temp;
 	while (infile >> temp) {
@@ -68,8 +68,8 @@ void Todo::list(void) {
 	}
 }
 
-void Todo::doit(int i) {
-	string line;
+void Todo::doit(int i) { //if number for do is correct and isn't an already done task
+	string line;		 //doit updates vector then writes to file
 	if (i < done && i > 0) {
 		line = mem[i - 1];
 		line.replace(2, 1, "X");
@@ -80,7 +80,7 @@ void Todo::doit(int i) {
 	}
 }
 
-void Todo::write(void) {
+void Todo::write(void) { //clears file then rewrites with new data
 	remove(file.c_str());
 	int x = 1;
 	string temp;
@@ -92,7 +92,7 @@ void Todo::write(void) {
 }
 
 int main(int argc, char* argv[]) {
-	if (argv[1] == "-f") {
+	if (argv[1] == "-f") { //case if -f switch is used
 		Todo driver(argv[2]);
 		if (argv[3] != "add" && argc > 5) {
 			cerr << "Too many args!1" << endl;
@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 	}
-	else {
+	else { //case used if default file is chosen
 		Todo driver;
 		if (argv[1] != "add" && argc > 3) {
 			cerr << "Too many args!3" << endl;
