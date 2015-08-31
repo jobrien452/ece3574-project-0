@@ -164,7 +164,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="x.cpp" />
     <ClCompile Include="todo.cpp" />
   </ItemGroup>
   <ItemGroup>

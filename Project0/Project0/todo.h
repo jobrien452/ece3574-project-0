@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,7 +7,7 @@
 
 class todo {//class construct
 public:
-	todo(int, char**);
+	todo(int argc, char * argv[]);
 	void addit(std::string);
 	void list(void);
 	void doit(int);
