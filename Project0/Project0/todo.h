@@ -12,6 +12,7 @@ public:
 	void list(void);
 	void doit(int);
 	void parse(void);
+	std::vector<std::string> getList(void);
 private:
 	void load(void);
 	void write(void);

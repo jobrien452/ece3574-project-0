@@ -30,6 +30,7 @@
     <ProjectGuid>{6E6C2A18-89BC-4D25-8E64-4200F7E7FCA9}</ProjectGuid>
     <RootNamespace>Project0</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>todo</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -164,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="mytest.cpp" />
     <ClCompile Include="x.cpp" />
     <ClCompile Include="todo.cpp" />
   </ItemGroup>

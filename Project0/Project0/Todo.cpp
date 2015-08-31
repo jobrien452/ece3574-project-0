@@ -138,3 +138,7 @@ void todo::parse(void) {
 		}
 	}
 }
+
+std::vector<std::string> todo::getList(void) {
+	return mem;
+}
