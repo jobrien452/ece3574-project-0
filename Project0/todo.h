@@ -4,6 +4,9 @@
 #include <vector>
 #include <regex>
 #include <stdio.h>
+//Todo.h header 
+//
+//Author: Jacob O'Brien (jakeo8@vt.edu)
 
 class todo {//class construct
 public:

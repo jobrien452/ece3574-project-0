@@ -1,4 +1,7 @@
 #include "todo.h"
+//todo class file
+//
+//Author: Jacob O'Brien (jakeo8@vt.edu)
 
 todo::todo(int argc, char * argv[]) { //default constuctor
 	file = "todo.txt";
@@ -34,7 +37,7 @@ void todo::addit(std::string ins) {//adds string to file
 	write(); //writes to file
 }
 
-void todo::list(void) { //lists file
+void todo::list() { //lists file
 	infile.open(file.c_str(), std::fstream::in);
 	std::string temp;
 	while (getline(infile, temp)) {
@@ -69,7 +72,7 @@ void todo::doit(int i) { //if number for do is correct and isn't an already done
 void todo::load(void) {
 	std::string line;
 	std::string e = ":[X]";
-	std::size_t found;
+	std::size_t found; //removed regex for compatibility
 	//std::regex e("^[[:digit:]]:\\[X\\]");//regex for done check
 	infile.open(file.c_str(), std::fstream::in);
 	while (getline(infile, line)) {//read file and check where done tasks begin also measure length
