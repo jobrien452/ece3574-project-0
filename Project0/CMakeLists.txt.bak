@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 2.4)
+project(todo)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+enable_testing()
+
+#find_package(GTest REQUIRED)
+
+include_directories(/gtest)
+
+add_executable(todo x.cpp todo.cpp todo.h)
+
+add_executable(todo_test mytest.cpp todo.cpp todo.h gtest.h gtest_main.cc gtest-all.cc)
+
+add_test(mytest todo_test)
+
